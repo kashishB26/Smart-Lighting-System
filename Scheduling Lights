@@ -1,0 +1,23 @@
+import schedule
+import time
+
+#turn on a light
+def turn_on_light(light_id):
+    # Logic to send MQTT command to turn on the specified light
+    pass
+
+#turn off a light
+def turn_off_light(light_id):
+    # Logic to send MQTT command to turn off the specified light
+    pass
+
+# Schedule turning on the living room light every day at 7:00 PM
+schedule.every().day.at("19:00").do(turn_on_light, "living_room")
+
+# Schedule turning off the living room light every day at 10:00 PM
+schedule.every().day.at("22:00").do(turn_off_light, "living_room")
+
+#run the scheduling loop
+while True:
+    schedule.run_pending()
+    time.sleep(1)
