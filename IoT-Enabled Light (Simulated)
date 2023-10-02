@@ -1,0 +1,23 @@
+import paho.mqtt.client as mqtt
+import random
+import time
+
+#MQTT broker connection details
+broker_address = "mqtt.broker.com"
+broker_port = 1883
+
+#random light ID
+light_id = "light" + str(random.randint(1, 10))
+
+#connect to MQTT broker
+client = mqtt.Client(light_id)
+client.connect(broker_address, broker_port)
+
+#simulate sending status updates
+while True:
+    status = random.choice(["on", "off"])
+    brightness = random.randint(0, 100)
+    color = random.choice(["warm_white", "cool_white", "soft_yellow"])
+    message = f'{{"status": "{status}", "brightness": {brightness}, "color": "{color}"}}'
+    client.publish(f"/lights/{light_id}", message)
+    time.sleep(5)
