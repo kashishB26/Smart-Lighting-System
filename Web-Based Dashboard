@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Lighting Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Smart Lighting Dashboard</h1>
+    
+    <div>
+        <h2>Living Room Light</h2>
+        <button id="turnOnLivingRoom">Turn On</button>
+        <button id="turnOffLivingRoom">Turn Off</button>
+        <input type="range" id="brightnessLivingRoom" min="0" max="100">
+    </div>
+
+    <div>
+        <h2>Bedroom Light</h2>
+        <button id="turnOnBedroom">Turn On</button>
+        <button id="turnOffBedroom">Turn Off</button>
+        <input type="range" id="brightnessBedroom" min="0" max="100">
+    </div>
+
+    <script>
+        // JavaScript code for handling user interactions and MQTT communication
+        const brokerAddress = "mqtt.broker.com";
+        const brokerPort = 1883;
+
+        // Define MQTT client and connect to broker
+        const client = new Paho.MQTT.Client(brokerAddress, brokerPort, "web-dashboard");
+        client.connect({ onSuccess: onConnect });
+
+        function onConnect() {
+            // Subscribe to topics for real-time updates
+            client.subscribe("/lights/living_room");
+            client.subscribe("/lights/bedroom");
+        }
+
+        // Handle received messages to update UI
+        client.onMessageArrived = function (message) {
+            const payload = JSON.parse(message.payloadString);
+            // Update UI elements based on payload (e.g., set light status, brightness)
+            // ...
+        };
+
+        // Handle user interactions (e.g., button clicks, slider changes) to send commands
+        $("#turnOnLivingRoom").click(() => sendCommand("/lights/living_room", "turn_on"));
+        $("#turnOffLivingRoom").click(() => sendCommand("/lights/living_room", "turn_off"));
+        $("#brightnessLivingRoom").change(() => sendCommand("/lights/living_room", "brightness", $("#brightnessLivingRoom").val()));
+
+        // Define a function to send commands to MQTT broker
+        function sendCommand(topic, action, value) {
+            const message = new Paho.MQTT.Message(JSON.stringify({ action, value }));
+            message.destinationName = topic;
+            client.send(message);
+        }
+    </script>
+</body>
+</html>
