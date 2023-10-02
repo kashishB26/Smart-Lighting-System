@@ -1,0 +1,11 @@
+# Define user credentials 
+user_credentials = {
+    "user123": "password123",
+    "user456": "secure456",
+}
+
+#Function to authenticate users
+def authenticate_user(username, password):
+    if username in user_credentials and user_credentials[username] == password:
+        return True
+    return False
