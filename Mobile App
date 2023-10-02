@@ -1,0 +1,38 @@
+// Sample Dart code for a mobile app (Flutter)
+
+import 'package:flutter/material.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  final MqttClient client = MqttClient('mqtt.broker.com', '');
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Smart Lighting App'),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              // Connect to MQTT broker
+              client.connect();
+              client.subscribe('/lights/living_room');
+              
+              // Send a command to turn on the living room light
+              final message = MqttClientPayloadBuilder();
+              message.addString('{"action": "turn_on"}');
+              client.publishMessage('/lights/living_room', MqttQos.exactlyOnce, message.payload);
+            },
+            child: Text('Turn On Living Room Light'),
+          ),
+        ),
+      ),
+    );
+  }
+}
